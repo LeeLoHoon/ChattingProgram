@@ -125,10 +125,15 @@ class ChatThread extends Thread{
 	public void send_userlist(){
 		synchronized(hm) {
 			ArrayList<String> IdArray =(ArrayList<String>) hm.keySet();
-			PrintWriter pw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
-			for(String Id:IdArray) {
-				pw.println(Id);
+			try{
+				PrintWriter pw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
+				for(String Id:IdArray) {
+					pw.println(Id);
+				}
+			}catch(Exception e){
+				System.out.println(e);
 			}
+
 		}
 	}
 }
