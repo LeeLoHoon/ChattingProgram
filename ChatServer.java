@@ -131,18 +131,16 @@ class ChatThread extends Thread{
 	}
 	//함수 호출한 client의 pw 로 전체 hm의 keySet을 print pw를어떻게?
 	public void send_userlist(){
-	try{
-			PrintWriter pw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 			synchronized(hm) {
+				Object obj = hm.get(id);
+				PrintWriter myPw = (PrintWriter) obj;
 				Iterator<String> iter = hm.keySet().iterator();
 			while(iter.hasNext()) {
 				String key=(String)iter.next();
-				pw.println(key);
-				pw.flush();
+				myPw.println(key);
+				myPpw.flush();
 			}}
-		}catch(Exception e){
-				System.out.println(e);
-			}
+		
 
 		}
 }
