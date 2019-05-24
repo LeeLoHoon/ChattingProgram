@@ -143,5 +143,6 @@ class ChatThread extends Thread{
 		
 
 		}
+	public
 }
 
