@@ -109,8 +109,10 @@ class ChatThread extends Thread{
 	} // sendmsg
 	public void broadcast(String msg){
 	try {
-		PrintWriter myPw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
+		//PrintWriter myPw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 		synchronized(hm){
+			Object obj = hm.get(id);
+			PrintWriter myPw = (PrintWriter) obj;
 			Collection collection = hm.values();
 			Iterator iter = collection.iterator(); 
 //hm에 있던 values들 즉, 각 socket의 printwriter들을 모아 저장
