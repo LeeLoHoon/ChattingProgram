@@ -6,8 +6,11 @@ import java.util.*;
 //java.util package 안에 있는 class: Hashmap, Collection, Iterator
 //java.io package 안에 있는 class: BufferedReader, PrintWriter, OutoutStreamWriter, InputStremReader, 
 
+
 public class ChatServer { //chatserver 의 instance는 언제 만들어지나? 안만들어짐.
-public static void main(String[] args) { // start 지점(class method/static method) - 객체없어도 실행가능
+
+	public static void main(String[] args) { // start 지점(class method/static method) - 객체없어도 실행가능
+
 try{
 			ServerSocket server = new ServerSocket(10001);//사용할 ip주소
 			System.out.println("Waiting connection...");
@@ -45,6 +48,7 @@ class ChatThread extends Thread{
 				hm.put(this.id, pw);
 			}//동기화 기능 수행 hm이라는 instance에 들어오는 id와 printwriter를 hm에 저장 및 동기화(이 과정이 없으면 충돌 발생--> 줄세우기)
 			//thread를 사용할때 가장 신경써야 하는 부분이 충돌
+
 			initFlag = true;
 		}catch(Exception ex){
 			System.out.println(ex);
@@ -65,6 +69,8 @@ class ChatThread extends Thread{
 					send_userlist();
 				}
 				else
+
+
 					broadcast(id + " : " + line);
 //그 외의 경우엔 모두 broadcast 실행
 			}//
@@ -96,6 +102,7 @@ class ChatThread extends Thread{
 			String msg2 = msg.substring(end+1);
 			//두번째 blanck space 이후 부터가 보낼 message
 			Object obj = hm.get(to); //읽든 쓰든 sync를 쓰는게 안전.
+
 	      //hm안에 해당 id(client)가 있는지 확인하고 있다면 printwriter return 
 			if(obj != null){
 				PrintWriter pw = (PrintWriter)obj; 
@@ -122,6 +129,7 @@ class ChatThread extends Thread{
 					pw.println(msg);
 					pw.flush();
 				}
+
 			} 
 //pw를 바꿔가면서 println 실행(존재하는 모든 pw에 println실행)
 		}
@@ -143,6 +151,5 @@ class ChatThread extends Thread{
 		
 
 		}
-	public void
 }
 
