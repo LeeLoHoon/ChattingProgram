@@ -55,6 +55,7 @@ class ChatThread extends Thread{
 		} //ex라는 Exception instance 를 에러가 발생할 시 만들어 print
 	} // 여기 까지가 ChatThread의 construcor
 	public void run(){
+		boolean check;
 		try{
 			String line = null;
 			while((line = br.readLine()) != null){ 
@@ -62,16 +63,20 @@ class ChatThread extends Thread{
 					break;
 //client로 부터 받아온 line이 /quit 이라면 break하고 while문 나옴
 				if(line.indexOf("/to ") == 0){
-					sendmsg(line);
+					check=checkline(line);
+					if(check==false)
+						sendmsg(line);
+					else warning();
 //client로 부터 받아온 line이 /to 라면 sendmsg method 실행
 				}
 				else if(line.equals("/userlist")) {
 					send_userlist();
 				}
-				else
-
-
-					broadcast(id + " : " + line);
+				else {
+					check=checkline(line);
+					if(check==false)
+						broadcast(id + " : " + line);
+					else warning();}
 //그 외의 경우엔 모두 broadcast 실행
 			}//
 		}catch(Exception ex){ 
@@ -115,22 +120,22 @@ class ChatThread extends Thread{
 		}
 	} // sendmsg
 	public void broadcast(String msg){
-	try {
+		try {
 		//PrintWriter myPw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
-		synchronized(hm){
-			Object obj = hm.get(id);
-			PrintWriter myPw = (PrintWriter) obj;
-			Collection collection = hm.values();
-			Iterator iter = collection.iterator(); 
+			synchronized(hm){
+				Object obj = hm.get(id);
+				PrintWriter myPw = (PrintWriter) obj;
+				Collection collection = hm.values();
+				Iterator iter = collection.iterator(); 
 //hm에 있던 values들 즉, 각 socket의 printwriter들을 모아 저장
-			while(iter.hasNext()){ //다음이 있으면 true 없으면 false
-				PrintWriter pw = (PrintWriter)iter.next();
-				if(!pw.equals(myPw)) {
-					pw.println(msg);
-					pw.flush();
-				}
+				while(iter.hasNext()){ //다음이 있으면 true 없으면 false
+					PrintWriter pw = (PrintWriter)iter.next();
+					if(!pw.equals(myPw)) {
+						pw.println(msg);
+						pw.flush();
+					}
 
-			} 
+				} 
 //pw를 바꿔가면서 println 실행(존재하는 모든 pw에 println실행)
 		}
 	}catch(Exception e){
@@ -151,5 +156,26 @@ class ChatThread extends Thread{
 		
 
 		}
+	public boolean checkline(String line) {
+		ArrayList<String> ben= new ArrayList<String>();
+		boolean point=false;
+		ben.add("fuck");
+		ben.add("shit");
+		ben.add("hell");
+		ben.add("asshole");
+		ben.add("easy");
+		for(String word:ben) {
+			if(line.indexOf(word)==0)
+				point=true;
+		}
+		return point;
+	}
 }
+	public void warning() {
+		Object obj = hm.get(id);
+		PrintWriter myPw = (PrintWriter) obj;
+		myPw.println("Don't use slang");
+		myPw.flush();
+		
+	}
 
