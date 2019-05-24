@@ -138,7 +138,7 @@ class ChatThread extends Thread{
 			while(iter.hasNext()) {
 				String key=(String)iter.next();
 				myPw.println(key);
-				myPpw.flush();
+				myPw.flush();
 			}}
 		
 
