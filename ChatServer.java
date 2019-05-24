@@ -170,7 +170,6 @@ class ChatThread extends Thread{
 		}
 		return point;
 	}
-}
 	public void warning() {
 		Object obj = hm.get(id);
 		PrintWriter myPw = (PrintWriter) obj;
@@ -178,4 +177,4 @@ class ChatThread extends Thread{
 		myPw.flush();
 		
 	}
-
+}
