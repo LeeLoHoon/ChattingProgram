@@ -108,22 +108,25 @@ class ChatThread extends Thread{
 		}
 	} // sendmsg
 	public void broadcast(String msg){
+	try {
+		PrintWriter myPw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 		synchronized(hm){
-			myPw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 			Collection collection = hm.values();
 			Iterator iter = collection.iterator(); 
 //hm에 있던 values들 즉, 각 socket의 printwriter들을 모아 저장
 			while(iter.hasNext()){ //다음이 있으면 true 없으면 false
 				PrintWriter pw = (PrintWriter)iter.next();
-				if(pw!=myPw) {
+				if(!pw.equals(myPw)) {
 					pw.println(msg);
 					pw.flush();
 				}
 			} 
 //pw를 바꿔가면서 println 실행(존재하는 모든 pw에 println실행)
 		}
+	}catch(Exception e){
+		System.out.println(e);
 	} // broadcast
-	
+	}
 	//함수 호출한 client의 pw 로 전체 hm의 keySet을 print pw를어떻게?
 	public void send_userlist(){
 	try{
