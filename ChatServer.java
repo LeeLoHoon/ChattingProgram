@@ -109,13 +109,16 @@ class ChatThread extends Thread{
 	} // sendmsg
 	public void broadcast(String msg){
 		synchronized(hm){
+			myPw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 			Collection collection = hm.values();
 			Iterator iter = collection.iterator(); 
 //hm에 있던 values들 즉, 각 socket의 printwriter들을 모아 저장
 			while(iter.hasNext()){ //다음이 있으면 true 없으면 false
 				PrintWriter pw = (PrintWriter)iter.next();
-				pw.println(msg);
-				pw.flush();
+				if(pw!=myPw) {
+					pw.println(msg);
+					pw.flush();
+				}
 			} 
 //pw를 바꿔가면서 println 실행(존재하는 모든 pw에 println실행)
 		}
@@ -126,9 +129,12 @@ class ChatThread extends Thread{
 	try{
 			PrintWriter pw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 			synchronized(hm) {
-			for(String Id:hm.keySet) {
-				pw.println(Id);
-				}}
+				Iterator<String> iter = hm.keySet().iterator();
+			while(iter.hasNext()) {
+				String key=(String)iter.next();
+				pw.println(key);
+				pw.flush();
+			}}
 		}catch(Exception e){
 				System.out.println(e);
 			}
