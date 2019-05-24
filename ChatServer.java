@@ -143,6 +143,6 @@ class ChatThread extends Thread{
 		
 
 		}
-	public
+	public void
 }
 
