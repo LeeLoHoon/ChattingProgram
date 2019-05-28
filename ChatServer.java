@@ -58,6 +58,7 @@ class ChatThread extends Thread {
 			while ((line = br.readLine()) != null) {
 				if (line.equals("/quit"))
 					break;
+				//여기서 미리 체크하고 뒤로 if문으로 line 쓰기
 				if (line.indexOf("/to ") == 0) {
 					//각각의 line을 check하기 위해 checkline method를 정의하여 boolean type을 return 하도록 설계
 					check = checkline(line);
@@ -158,16 +159,19 @@ class ChatThread extends Thread {
 		ben.add("asshole");
 		ben.add("easy");
 		//ArrayList를 loop 돌면서 line에 있는지 확인하고 있으면 point는 true 
+		//여기서 index가 금지어가 걸리면 브레이크 하기, index가 0이 아닌 경우에는 true로 안바뀜 
 		for (String word : ben) {
 			if (line.indexOf(word) == 0)
 				point = true;
 		}
+		
 		//없으면 point는 false
 		return point;
 	}
 	
 	//send_userlist에서 썼던 것과 같은 논리로 msg를 입력한 client의 id를 이용해 해당 client의 pw return
 	public void warning() {
+		//여기서 어떤 욕설을 써서 걸렸는지 알 수 없음.
 		Object obj = hm.get(id);
 		PrintWriter myPw = (PrintWriter) obj;
 		myPw.println("Don't use slang");
