@@ -99,19 +99,23 @@ class ChatThread extends Thread{
 		Object obj = hm.get(id);
 		if(obj != null){
 				PrintWriter pw = (PrintWriter)obj;
-				for(String element : spam) {
-					pw.println("["+Time.format(Today)+"]" + element);
-					pw.flush();
-				}
+				synchronized(spam) {
+					for(String element : spam) {
+						pw.println("["+Time.format(Today)+"]" + element);
+						pw.flush();
+					}
+				}				
 		}
 	}
 	private void addedSpam(String line) {
 		Date Today = new Date();
 		SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 		int start = line.indexOf(" ") +1;
+		synchronized(spam) {
 		if(start != -1){
 			String addspam = line.substring(start);
 			spam.add(addspam);
+		}
 		}
 	}
 		
