@@ -49,10 +49,17 @@ class ChatThread extends Thread{
 			String line = null;
 			String str = null;
 			while((line = br.readLine()) != null){
+				ArrayList<String> spamlist = new ArrayList<String>;
 				if(line.equals("/quit"))
 					break;
 				if((str = checkword(line))!= null){
 					warning(str);
+				}
+				else if(line.equals("/spamlist")) {
+					printSpamList(spamlist);
+				}
+				else if(line.indexOf("/addspam")==0) {
+					spamlist=addedSpam(spamlist,line);
 				}
 				else if(line.equals("/userlist")){
 					senduserlist();
@@ -75,6 +82,12 @@ class ChatThread extends Thread{
 			}catch(Exception ex){}
 		}
 	} // run
+	private void printSpamList(ArrayList<String> list) {
+		for(string element : list) {
+			System.out.println(element);
+		}
+	}
+	private void addedSpam(ArrayList list, )
 	private void senduserlist(){
 		int j = 1;
 		PrintWriter pw = null;
@@ -136,7 +149,7 @@ class ChatThread extends Thread{
 			while(iter.hasNext()){
 				PrintWriter pw = (PrintWriter)iter.next();
 				PrintWriter pw2 = (PrintWriter)hm.get(id);
-				if(pw==pw2) continue;
+				if(pw==pw2) continue; //뒤엣거 수행안함.
 				pw.println(msg);
 				pw.flush();
 			}
