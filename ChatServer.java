@@ -49,7 +49,7 @@ class ChatThread extends Thread{
 			String line = null;
 			String str = null;
 			while((line = br.readLine()) != null){
-				ArrayList<String> spamlist = new ArrayList<String>;
+				ArrayList<String> spamlist = new ArrayList<String>();
 				if(line.equals("/quit"))
 					break;
 				if((str = checkword(line,spamlist))!= null){
