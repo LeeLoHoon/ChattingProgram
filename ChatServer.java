@@ -1,13 +1,18 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class ChatServer {
 
 	public static void main(String[] args) {
 		try{
+			Date Today = new Date();
+			SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 			ServerSocket server = new ServerSocket(10001);
-			System.out.println("Waiting connection...");
+			System.out.println("["+Time.format(Today)+ "]" +" Waiting connection...");
 			HashMap hm = new HashMap();
 			ArrayList<String> spam = new ArrayList<String>(); 
 			while(true){
@@ -27,9 +32,11 @@ class ChatThread extends Thread{
 	private String id;
 	private BufferedReader br;
 	private HashMap hm;
-	private ArrayList spam;
+	private ArrayList<String> spam;
 	private boolean initFlag = false;
-	public ChatThread(Socket sock, HashMap hm){
+	public ChatThread(Socket sock, HashMap hm,ArrayList<String> spam){
+		Date Today = new Date();
+		SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 		this.sock = sock;
 		this.hm = hm;
 		this.spam=spam;
@@ -38,7 +45,7 @@ class ChatThread extends Thread{
 			br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			id = br.readLine();
 			broadcast(id + " entered.");
-			System.out.println("[Server] User (" + id + ") entered.");
+			System.out.println("["+Time.format(Today)+"]" + " [Server] User (" + id + ") entered.");
 			synchronized(hm){
 				hm.put(this.id, pw);
 			}
@@ -48,6 +55,8 @@ class ChatThread extends Thread{
 		}
 	} // construcor
 	public void run(){
+		Date Today = new Date();
+		SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 		try{
 			String line = null;
 			String str = null;
@@ -61,7 +70,7 @@ class ChatThread extends Thread{
 					printSpamList();
 				}
 				else if(line.indexOf("/addspam")==0) {
-					spamlist=addedSpam(spamlist,line);
+					addedSpam(line);
 				}
 				else if(line.equals("/userlist")){
 					senduserlist();
@@ -77,7 +86,7 @@ class ChatThread extends Thread{
 			synchronized(hm){
 				hm.remove(id);
 			}
-			broadcast(id + " exited.");
+			broadcast("["+Time.format(Today)+"]" + id + " exited.");
 			try{
 				if(sock != null)
 					sock.close();
@@ -85,16 +94,20 @@ class ChatThread extends Thread{
 		}
 	} // run
 	private void printSpamList() {
+		Date Today = new Date();
+		SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 		Object obj = hm.get(id);
 		if(obj != null){
 				PrintWriter pw = (PrintWriter)obj;
 				for(String element : spam) {
-					pw.println(element);
+					pw.println("["+Time.format(Today)+"]" + element);
 					pw.flush();
 				}
 		}
 	}
 	private void addedSpam(String line) {
+		Date Today = new Date();
+		SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 		int start = line.indexOf(" ") +1;
 		if(start != -1){
 			String addspam = line.substring(start);
@@ -103,6 +116,8 @@ class ChatThread extends Thread{
 	}
 		
 	private void senduserlist(){
+		Date Today = new Date();
+		SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 		int j = 1;
 		PrintWriter pw = null;
 		Object obj = null;
@@ -117,15 +132,17 @@ class ChatThread extends Thread{
 		pw.println("<User list>");
 		while(iter.hasNext()){
 				String list = (String)iter.next();
-				pw.println(j+". "+list);
+				pw.println("["+Time.format(Today)+"]" + j+". "+list);
 				j++;
 		}
 		j--;
-		pw.println("Total : "+j+".");
+		pw.println("["+Time.format(Today)+"]" + "Total : "+j+".");
 		pw.flush();
 	}
 
 	public String checkword(String msg){
+		Date Today = new Date();
+		SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 		int b = 1;
 		for(String check : spam){
 			if(msg.contains(check))
@@ -134,14 +151,18 @@ class ChatThread extends Thread{
 		return null;
 	}
 	public void warning(String msg){
+		Date Today = new Date();
+		SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 		Object obj = hm.get(id);
 		if(obj != null){
 				PrintWriter pw = (PrintWriter)obj;
-				pw.println("Don't use "+ msg);
+				pw.println("["+Time.format(Today)+"]" + "Don't use "+ msg);
 				pw.flush();
 		} // if
 	}
 	public void sendmsg(String msg){
+		Date Today = new Date();
+		SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 		int start = msg.indexOf(" ") +1;
 		int end = msg.indexOf(" ", start);
 		if(end != -1){
@@ -150,12 +171,14 @@ class ChatThread extends Thread{
 			Object obj = hm.get(to);
 			if(obj != null){
 				PrintWriter pw = (PrintWriter)obj;
-				pw.println(id + " whisphered. : " + msg2);
+				pw.println("["+Time.format(Today)+"]" + id + " whisphered. : " + msg2);
 				pw.flush();
 			} // if
 		}
 	} // sendmsg
 	public void broadcast(String msg){
+		Date Today = new Date();
+		SimpleDateFormat Time = new SimpleDateFormat("HH:mm:ss");
 		synchronized(hm){
 			Collection collection = hm.values();
 			Iterator iter = collection.iterator();
@@ -163,7 +186,7 @@ class ChatThread extends Thread{
 				PrintWriter pw = (PrintWriter)iter.next();
 				PrintWriter pw2 = (PrintWriter)hm.get(id);
 				if(pw==pw2) continue; //뒤엣거 수행안함.
-				pw.println(msg);
+				pw.println("["+Time.format(Today)+"]" + msg);
 				pw.flush();
 			}
 		}
