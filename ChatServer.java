@@ -9,9 +9,10 @@ public class ChatServer {
 			ServerSocket server = new ServerSocket(10001);
 			System.out.println("Waiting connection...");
 			HashMap hm = new HashMap();
+			ArrayList<String> spam = new ArrayList<String>(); 
 			while(true){
 				Socket sock = server.accept();
-				ChatThread chatthread = new ChatThread(sock, hm);
+				ChatThread chatthread = new ChatThread(sock, hm, spam);
 // 뭔가를 물어본다... 예를 들어 클라이언트 아이디를..
 				chatthread.start();
 			} // while
@@ -26,10 +27,12 @@ class ChatThread extends Thread{
 	private String id;
 	private BufferedReader br;
 	private HashMap hm;
+	private ArrayList spam;
 	private boolean initFlag = false;
 	public ChatThread(Socket sock, HashMap hm){
 		this.sock = sock;
 		this.hm = hm;
+		this.spam=spam;
 		try{
 			PrintWriter pw = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 			br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
@@ -49,14 +52,13 @@ class ChatThread extends Thread{
 			String line = null;
 			String str = null;
 			while((line = br.readLine()) != null){
-				ArrayList<String> spamlist = new ArrayList<String>();
 				if(line.equals("/quit"))
 					break;
-				if((str = checkword(line,spamlist))!= null){
+				if((str = checkword(line))!= null){
 					warning(str);
 				}
 				else if(line.equals("/spamlist")) {
-					printSpamList(spamlist);
+					printSpamList();
 				}
 				else if(line.indexOf("/addspam")==0) {
 					spamlist=addedSpam(spamlist,line);
@@ -82,19 +84,23 @@ class ChatThread extends Thread{
 			}catch(Exception ex){}
 		}
 	} // run
-	private void printSpamList(ArrayList<String> list) {
-		for(string element : list) {
-			System.out.println(element);
+	private void printSpamList() {
+		Object obj = hm.get(id);
+		if(obj != null){
+				PrintWriter pw = (PrintWriter)obj;
+				for(String element : spam) {
+					pw.println(element);
+					pw.flush();
+				}
 		}
 	}
-	private ArrayList<String> addedSpam(ArrayList<String> List, String line) {
+	private void addedSpam(String line) {
 		int start = line.indexOf(" ") +1;
-		int end = line.indexOf(" ", start);
 		if(start != -1){
-			String addspam = line.substring(start, end);
-			List.add(addspam);
+			String addspam = line.substring(start);
+			spam.add(addspam);
 		}
-		return List;
+	}
 		
 	private void senduserlist(){
 		int j = 1;
@@ -119,9 +125,9 @@ class ChatThread extends Thread{
 		pw.flush();
 	}
 
-	public String checkword(String msg,ArrayList<String> spamCheck){
+	public String checkword(String msg){
 		int b = 1;
-		for(String check : spamCheck)){
+		for(String check : spam){
 			if(msg.contains(check))
 				return check;
 		}
