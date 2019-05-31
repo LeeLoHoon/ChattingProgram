@@ -52,7 +52,7 @@ class ChatThread extends Thread{
 				ArrayList<String> spamlist = new ArrayList<String>;
 				if(line.equals("/quit"))
 					break;
-				if((str = checkword(line))!= null){
+				if((str = checkword(line,spamlist))!= null){
 					warning(str);
 				}
 				else if(line.equals("/spamlist")) {
@@ -87,7 +87,15 @@ class ChatThread extends Thread{
 			System.out.println(element);
 		}
 	}
-	private void addedSpam(ArrayList list, )
+	private ArrayList<String> addedSpam(ArrayList<String> List, String line) {
+		int start = line.indexOf(" ") +1;
+		int end = line.indexOf(" ", start);
+		if(start != -1){
+			String addspam = line.substring(start, end);
+			List.add(addspam);
+		}
+		return List;
+		
 	private void senduserlist(){
 		int j = 1;
 		PrintWriter pw = null;
@@ -111,12 +119,11 @@ class ChatThread extends Thread{
 		pw.flush();
 	}
 
-	public String checkword(String msg){
+	public String checkword(String msg,ArrayList<String> spamCheck){
 		int b = 1;
-		String[] word ={"바보","멍청이","병신","놈","새끼"};
-		for(int i=0;i<word.length;i++){
-			if(msg.contains(word[i]))
-				return word[i];
+		for(String check : spamCheck)){
+			if(msg.contains(check))
+				return check;
 		}
 		return null;
 	}
